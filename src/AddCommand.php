@@ -1,6 +1,5 @@
 <?php namespace Acme;
 
-// use Acme\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +25,8 @@ class AddCommand extends Command{
 		);
 
 		$output->writeln('<info>Task Added!</info>');
+
+		$this->showTasks($output);
 	}
 
 }
