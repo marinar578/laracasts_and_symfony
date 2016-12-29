@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use GuzzleHttp\ClientInterface;
+use ZipArchive;
 
 class NewCommand extends Command{
 
@@ -31,12 +32,10 @@ class NewCommand extends Command{
 		$this->assertApplicationDoesNotExist($directory, $output);
 
 		// download nightly version of Laravel
-		$this->download($this->makeFileName())
-			->extract();
+		$this->download($zipFile = $this->makeFileName())
+			->extract($zipFile, $directory);
 
-		// extract zip file
-
-		// alert the user that they're ready to go
+		$output->writeln('<comment>Application Ready!</comment>');
 	}
 
 	private function assertApplicationDoesNotExist($directory, OutputInterface $output)
@@ -63,8 +62,14 @@ class NewCommand extends Command{
 		return $this;
 	}
 
-	private function extract()
+	private function extract($zipFile, $directory)
 	{
+		$archive = new ZipArchive;
 
+		$archive->open($zipFile);
+		$archive->extractTo($directory);
+		$archive->close();
+
+		return $this;
 	}
 }
