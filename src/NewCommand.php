@@ -18,11 +18,24 @@ class NewCommand extends Command{
 	public function execute(InputInterface $input, OutputInterface $output)
 	{
 		// assert that the folder doesn't already exist
+		$directory = getcwd() . '/' . $input->getArgument('name');
+
+		$this->assertApplicationDoesNotExist($directory, $output);
 
 		// download nightly version of Laravel
 
 		// extract zip file
 
 		// alert the user that they're ready to go
+	}
+
+	private function assertApplicationDoesNotExist($directory, OutputInterface $output)
+	{
+		if (is_dir($directory))
+		{
+			$output->writeln('Application already exists');
+			
+			exit(1);
+		}
 	}
 }

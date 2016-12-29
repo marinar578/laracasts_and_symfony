@@ -2,7 +2,8 @@
 
 <?php
 
-use Acme\SayHelloCommand;
+use Acme\NewCommand;
+// use Acme\SayHelloCommand;
 use Symfony\Component\Console\Application;
 
 require 'vendor/autoload.php';
