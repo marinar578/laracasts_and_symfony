@@ -1,6 +1,7 @@
 #! /usr/bin/env php
 
 <?php
+// run in terminal with './laracasts <name of command> <arguments>'
 
 use Acme\NewCommand;
 use Acme\SayHelloCommand;
