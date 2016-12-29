@@ -5,8 +5,17 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use GuzzleHttp\ClientInterface;
 
 class NewCommand extends Command{
+
+	protected $client;
+
+	public function __construct(ClientInterface $client) {
+		$this->client = $client;
+
+		parent::__construct();
+	}
 
 	public function configure()
 	{
@@ -17,12 +26,13 @@ class NewCommand extends Command{
 
 	public function execute(InputInterface $input, OutputInterface $output)
 	{
-		// assert that the folder doesn't already exist
 		$directory = getcwd() . '/' . $input->getArgument('name');
 
 		$this->assertApplicationDoesNotExist($directory, $output);
 
 		// download nightly version of Laravel
+		$this->download($this->makeFileName())
+			->extract();
 
 		// extract zip file
 
@@ -33,9 +43,28 @@ class NewCommand extends Command{
 	{
 		if (is_dir($directory))
 		{
-			$output->writeln('Application already exists');
-			
+			$output->writeln('<error>Application already exists</error>');
+
 			exit(1);
 		}
+	}
+
+	private function makeFileName()
+	{
+		return getcwd() . '/laravel_' . md5(time().uniqid()) . '.zip';
+	}
+
+	private function download($zipFile)
+	{
+		$response = $this->client->get('http://cabinet.laravel.com/latest.zip')->getBody();
+
+		file_put_contents($zipFile, $response);
+
+		return $this;
+	}
+
+	private function extract()
+	{
+
 	}
 }
